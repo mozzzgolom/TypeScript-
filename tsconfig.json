@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+      "outDir": "public/scripts",
+      "module": "es2015",
+      "target": "es2015",
+      "moduleResolution": "Node",
+      "allowSyntheticDefaultImports": true
+    },
+    "files": ["src/index.ts"],
+    "exclude": [
+      "node_modules"
+    ]
+  }
