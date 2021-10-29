@@ -15,8 +15,39 @@ const secondDateMonth = secondDate.getMonth() + 1 < 10 ? '0' + (secondDate.getMo
 const secondDateYear = secondDate.getFullYear() + '';
 const secondDay = `${secondDateYear}-${secondDateMonth}-${secondDateDay}`;
 
+let userData: unknown
+let favoritesAmount: unknown
+interface UserData {
+  username: string,
+  avatarURL: string
+}
+
+const getUserData = () => {
+  localStorage.setItem('user', JSON.stringify({ username: 'name lastname', avatarURL: '/img/avatar.png' }))
+  return userData = JSON.parse(localStorage.getItem('user')) as UserData
+}
+
+const validateData = (data: any): UserData => {
+  console.log(data, data.username, data.avatarURL, typeof data, typeof data === 'object', 'username' in data, 'avatarURL' in data)
+  if (typeof data === 'object' && 'username' in data && 'avatarURL' in data) {
+    console.log(data)
+    return data
+  }
+}
+
+const getFavoritesAmount = () => {
+  localStorage.setItem('favoritesAmount', '5')
+  return localStorage.getItem('favoritesAmount')
+}
+
+getUserData()
+
 window.addEventListener('DOMContentLoaded', () => {
-  renderUserBlock('Wade Warren', '/img/avatar.png', 0)
+  const data = validateData(userData)
+  favoritesAmount = Number(getFavoritesAmount())
+  if (typeof favoritesAmount === 'number') {
+    renderUserBlock(data.username, data.avatarURL, favoritesAmount)
+  }
   renderSearchFormBlock(nextDay, secondDay)
   renderSearchStubBlock()
   renderToast(
