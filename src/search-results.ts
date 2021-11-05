@@ -1,4 +1,7 @@
 import { renderBlock } from './lib.js'
+import { getFavoritesAmount, validateData, getUserData } from './index.js'
+import { renderUserBlock } from './user.js';
+
 
 export function renderSearchStubBlock() {
   renderBlock(
@@ -24,7 +27,22 @@ export function renderEmptyOrErrorSearchBlock(reasonMessage) {
   )
 }
 
-export function renderSearchResultsBlock() {
+interface IPlace {
+  id: number,
+  name: string,
+  description: string,
+  image: string,
+  remoteness: number,
+  bookedDates: [],
+  price: number
+}
+
+let currentPLace: IPlace
+let favoriteList = JSON.parse(localStorage.getItem('favoritesAmount'))
+
+export function renderSearchResultsBlock(place: IPlace) {
+  console.log('renderSearchResultsBlock: ', place)
+  currentPLace = place
   renderBlock(
     'search-results-block',
     `
@@ -43,7 +61,7 @@ export function renderSearchResultsBlock() {
       <li class="result">
         <div class="result-container">
           <div class="result-img-container">
-            <div class="favorites active"></div>
+            <div class="favorites" data-index="1"></div>
             <img class="result-img" src="./img/result-1.png" alt="">
           </div>	
           <div class="result-info">
@@ -64,7 +82,7 @@ export function renderSearchResultsBlock() {
       <li class="result">
         <div class="result-container">
           <div class="result-img-container">
-            <div class="favorites"></div>
+            <div class="favorites" data-index="2"></div>
             <img class="result-img" src="./img/result-2.png" alt="">
           </div>	
           <div class="result-info">
@@ -85,4 +103,68 @@ export function renderSearchResultsBlock() {
     </ul>
     `
   )
+
+  const resultsList: HTMLElement = document.querySelector('.results-list')
+  const favoritesElem: NodeList = document.querySelectorAll('.favorites')
+
+  toggleFavoritesElem(favoritesElem)
+
+  console.log(resultsList)
+  resultsList.addEventListener('click', (evt) => {
+    console.log('click')
+    const target = evt.target as HTMLElement
+    const classList = target.classList
+    //console.log(classList)
+    for (const val of classList) {
+      console.log(val)
+      if (val === 'favorites') {
+        const idx = Number(target.dataset.index)
+        console.log(idx)
+        toggleFavoriteItem(idx, favoritesElem)
+
+        break
+      } else {
+        console.log(JSON.parse(localStorage.getItem('favoritesAmount')))
+      }
+    }
+  })
+}
+
+
+
+
+let favoritesAmount: unknown
+let userData: unknown
+const toggleFavoritesElem = (favoritesElem: NodeList) => {
+  for (let i = 0; i < favoritesElem.length; i++) {
+    const elem = favoritesElem[i] as HTMLElement
+    if (Number(elem.dataset.index) in favoriteList) {
+      elem.classList.add('active')
+    } else {
+      elem.classList.remove('active')
+    }
+  }
+
+}
+
+const toggleFavoriteItem = (idx: number, favoritesElem: NodeList) => {
+  if (idx in favoriteList) {
+    console.log(idx in favoriteList)
+    delete favoriteList[idx]
+    toggleFavoritesElem(favoritesElem)
+  } else {
+    favoriteList = {
+      [idx]: currentPLace[idx],
+      ...favoriteList
+    }
+    toggleFavoritesElem(favoritesElem)
+  }
+
+  localStorage.setItem('favoritesAmount', JSON.stringify(favoriteList))
+  userData = getUserData()
+  const data = validateData(userData)
+  favoritesAmount = Number(getFavoritesAmount())
+  if (typeof favoritesAmount === 'number') {
+    renderUserBlock(data.username, data.avatarURL, favoritesAmount)
+  }
 }

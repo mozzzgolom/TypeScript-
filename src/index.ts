@@ -22,12 +22,12 @@ interface UserData {
   avatarURL: string
 }
 
-const getUserData = () => {
+export const getUserData = () => {
   localStorage.setItem('user', JSON.stringify({ username: 'name lastname', avatarURL: '/img/avatar.png' }))
-  return userData = JSON.parse(localStorage.getItem('user')) as UserData
+  return JSON.parse(localStorage.getItem('user')) as UserData
 }
 
-const validateData = (data: any): UserData => {
+export const validateData = (data: any): UserData => {
   console.log(data, data.username, data.avatarURL, typeof data, typeof data === 'object', 'username' in data, 'avatarURL' in data)
   if (typeof data === 'object' && 'username' in data && 'avatarURL' in data) {
     console.log(data)
@@ -35,14 +35,14 @@ const validateData = (data: any): UserData => {
   }
 }
 
-const getFavoritesAmount = () => {
-  localStorage.setItem('favoritesAmount', '5')
-  return localStorage.getItem('favoritesAmount')
+export const getFavoritesAmount = () => {
+  return Object.keys(JSON.parse(localStorage.getItem('favoritesAmount'))).length
 }
 
-getUserData()
+
 
 window.addEventListener('DOMContentLoaded', () => {
+  userData = getUserData()
   const data = validateData(userData)
   favoritesAmount = Number(getFavoritesAmount())
   if (typeof favoritesAmount === 'number') {
@@ -55,4 +55,3 @@ window.addEventListener('DOMContentLoaded', () => {
     { name: 'Понял', handler: () => { console.log('Уведомление закрыто') } }
   )
 })
-
