@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+      "outDir": "public/scripts",
+      "module": "es2015",
+      "target": "es2015",
+      "moduleResolution": "Node",
+      "allowSyntheticDefaultImports": true
+    },
+    // "files": ["src/index.ts"],
+    "include": ["src/*", "src/flat-rent-sdk.ts"],
+    "exclude": [
+      "node_modules"
+    ]
+  }
